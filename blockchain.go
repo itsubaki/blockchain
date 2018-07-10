@@ -1,9 +1,8 @@
-package quasar
+package blockchain
 
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"math"
 	"strconv"
 	"strings"
@@ -15,34 +14,10 @@ type BlockChain struct {
 	transcations []*Transaction
 }
 
-type Block struct {
-	Index       int            `json:"index"`
-	Timestamp   int64          `json:"timestamp"`
-	Transaction []*Transaction `json:"transaction"`
-	Proof       int            `json:"proof"`
-	PreHash     string         `json:"previous_hash"`
-}
-
-type Transaction struct {
-	sender    string
-	recipient string
-	amount    float64
-}
-
 func NewBlockChain() *BlockChain {
 	c := &BlockChain{}
 	c.NewBlock("genesis block", 100)
 	return c
-}
-
-func (b *Block) Hash() string {
-	bytea, err := json.Marshal(b)
-	if err != nil {
-		panic(err)
-	}
-
-	sha := sha256.Sum256(bytea)
-	return hex.EncodeToString(sha[:])
 }
 
 func (c *BlockChain) NewBlock(preHash string, proof int) *Block {
