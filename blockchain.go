@@ -84,7 +84,6 @@ func (c *BlockChain) Resolve(d *BlockChain) bool {
 }
 
 func ProofOfWork(last int) int {
-
 	for i := 0; i < math.MaxInt64; i++ {
 		if Validate(last, i) {
 			return i
@@ -95,9 +94,8 @@ func ProofOfWork(last int) int {
 }
 
 func Validate(last, current int) bool {
-	lstr := strconv.Itoa(last)
-	str := strconv.Itoa(current)
-	sha := sha256.Sum256([]byte(lstr + str))
+	nonce := strconv.Itoa(last) + strconv.Itoa(current)
+	sha := sha256.Sum256([]byte(nonce))
 	hash := hex.EncodeToString(sha[:])
 
 	if strings.HasPrefix(hash, "0000") {
