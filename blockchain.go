@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+const target = "0000"
+
 type BlockChain struct {
 	blocks       []*Block
 	transcations []*Transaction
@@ -20,13 +22,13 @@ func NewBlockChain() *BlockChain {
 	return c
 }
 
-func (c *BlockChain) NewBlock(preHash string, proof int) *Block {
+func (c *BlockChain) NewBlock(preHash string, nonce int) *Block {
 	b := &Block{
 		Index:       len(c.blocks) + 1,
 		Timestamp:   time.Now().UnixNano(),
 		Transaction: c.transcations,
-		Proof:       proof,
 		PreHash:     preHash,
+		Nonce:       nonce,
 	}
 
 	c.transcations = []*Transaction{}
@@ -59,9 +61,9 @@ func (c *BlockChain) Resolve(d *BlockChain) bool {
 }
 
 func ProofOfWork(last int) int {
-	for i := 0; i < math.MaxInt64; i++ {
-		if Validate(last, i) {
-			return i
+	for nonce := 0; nonce < math.MaxInt64; nonce++ {
+		if Validate(last, nonce) {
+			return nonce
 		}
 	}
 
@@ -69,11 +71,11 @@ func ProofOfWork(last int) int {
 }
 
 func Validate(last, current int) bool {
-	nonce := strconv.Itoa(last) + strconv.Itoa(current)
-	sha := sha256.Sum256([]byte(nonce))
+	str := strconv.Itoa(last) + strconv.Itoa(current)
+	sha := sha256.Sum256([]byte(str))
 	hash := hex.EncodeToString(sha[:])
 
-	if strings.HasPrefix(hash, "0000") {
+	if strings.HasPrefix(hash, target) {
 		return true
 	}
 
@@ -90,7 +92,7 @@ func ValidateChain(chain *BlockChain) bool {
 			return false
 		}
 
-		if !Validate(pre.Proof, next.Proof) {
+		if !Validate(pre.Nonce, next.Nonce) {
 			return false
 		}
 

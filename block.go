@@ -10,8 +10,8 @@ type Block struct {
 	Index       int            `json:"index"`
 	Timestamp   int64          `json:"timestamp"`
 	Transaction []*Transaction `json:"transaction"`
-	Proof       int            `json:"proof"`
 	PreHash     string         `json:"previous_hash"`
+	Nonce       int            `json:"nonce"`
 }
 
 func (b *Block) Hash() string {

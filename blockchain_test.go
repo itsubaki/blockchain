@@ -8,14 +8,14 @@ func TestMine(t *testing.T) {
 	c := NewBlockChain()
 
 	for i := 0; i < 10; i++ {
-		proof := ProofOfWork(c.Last().Proof)
+		nonce := ProofOfWork(c.Last().Nonce)
 
 		c.NewTransaction("sender", "recipient", 1.2)
 		c.NewTransaction("sender", "recipient", 1.4)
 		c.NewTransaction("sender", "recipient", 1.6)
 
 		preHash := c.Last().Hash()
-		c.NewBlock(preHash, proof)
+		c.NewBlock(preHash, nonce)
 	}
 
 	if !ValidateChain(c) {
@@ -27,14 +27,14 @@ func TestInvalidBlock(t *testing.T) {
 	c := NewBlockChain()
 
 	for i := 0; i < 10; i++ {
-		proof := ProofOfWork(c.Last().Proof)
+		nonce := ProofOfWork(c.Last().Nonce)
 
 		c.NewTransaction("sender", "recipient", 1.2)
 		c.NewTransaction("sender", "recipient", 1.4)
 		c.NewTransaction("sender", "recipient", 1.6)
 
 		preHash := c.Last().Hash()
-		c.NewBlock(preHash, proof)
+		c.NewBlock(preHash, nonce)
 	}
 
 	preHash := c.Last().Hash()
