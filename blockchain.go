@@ -38,7 +38,7 @@ func (c *BlockChain) NewBlock(preHash string, nonce int) *Block {
 }
 
 func (c *BlockChain) NewTransaction(sender, recipient string, amount float64) int {
-	t := &Transaction{sender: sender, recipient: recipient, amount: amount}
+	t := &Transaction{Sender: sender, Recipient: recipient, Amount: amount}
 	c.transcations = append(c.transcations, t)
 	return c.Last().Index + 1
 }
@@ -60,9 +60,10 @@ func (c *BlockChain) Resolve(d *BlockChain) bool {
 	return true
 }
 
-func ProofOfWork(last int) int {
+func ProofOfWork(b *Block) int {
+	hash := b.Hash()
 	for nonce := 0; nonce < math.MaxInt64; nonce++ {
-		if Validate(last, nonce) {
+		if Validate(hash, nonce) {
 			return nonce
 		}
 	}
@@ -70,8 +71,8 @@ func ProofOfWork(last int) int {
 	panic("hash not found.")
 }
 
-func Validate(last, current int) bool {
-	str := strconv.Itoa(last) + strconv.Itoa(current)
+func Validate(preHash string, current int) bool {
+	str := preHash + strconv.Itoa(current)
 	sha := sha256.Sum256([]byte(str))
 	hash := hex.EncodeToString(sha[:])
 
@@ -92,7 +93,7 @@ func ValidateChain(chain *BlockChain) bool {
 			return false
 		}
 
-		if !Validate(pre.Nonce, next.Nonce) {
+		if !Validate(pre.Hash(), next.Nonce) {
 			return false
 		}
 

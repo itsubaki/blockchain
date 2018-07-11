@@ -1,6 +1,7 @@
 package blockchain
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -8,14 +9,15 @@ func TestMine(t *testing.T) {
 	c := NewBlockChain()
 
 	for i := 0; i < 10; i++ {
-		nonce := ProofOfWork(c.Last().Nonce)
+		c.NewTransaction("alice", "bob", 1.2)
+		c.NewTransaction("alice", "bob", 1.4)
+		c.NewTransaction("alice", "bob", 1.6)
 
-		c.NewTransaction("sender", "recipient", 1.2)
-		c.NewTransaction("sender", "recipient", 1.4)
-		c.NewTransaction("sender", "recipient", 1.6)
+		pre := c.Last()
+		nonce := ProofOfWork(pre)
+		new := c.NewBlock(pre.Hash(), nonce)
 
-		preHash := c.Last().Hash()
-		c.NewBlock(preHash, nonce)
+		fmt.Println(new)
 	}
 
 	if !ValidateChain(c) {
@@ -27,14 +29,13 @@ func TestInvalidBlock(t *testing.T) {
 	c := NewBlockChain()
 
 	for i := 0; i < 10; i++ {
-		nonce := ProofOfWork(c.Last().Nonce)
+		c.NewTransaction("alice", "bob", 1.2)
+		c.NewTransaction("alice", "bob", 1.4)
+		c.NewTransaction("alice", "bob", 1.6)
 
-		c.NewTransaction("sender", "recipient", 1.2)
-		c.NewTransaction("sender", "recipient", 1.4)
-		c.NewTransaction("sender", "recipient", 1.6)
-
-		preHash := c.Last().Hash()
-		c.NewBlock(preHash, nonce)
+		pre := c.Last()
+		nonce := ProofOfWork(pre)
+		c.NewBlock(pre.Hash(), nonce)
 	}
 
 	preHash := c.Last().Hash()

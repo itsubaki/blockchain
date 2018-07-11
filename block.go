@@ -23,3 +23,12 @@ func (b *Block) Hash() string {
 	sha := sha256.Sum256(bytea)
 	return hex.EncodeToString(sha[:])
 }
+
+func (b *Block) String() string {
+	bytea, err := json.Marshal(b)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(bytea)
+}

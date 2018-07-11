@@ -1,7 +1,7 @@
 package blockchain
 
 type Transaction struct {
-	sender    string
-	recipient string
-	amount    float64
+	Sender    string  `json:"sender"`
+	Recipient string  `json:"recipient"`
+	Amount    float64 `json:"amount"`
 }
