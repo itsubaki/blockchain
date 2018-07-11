@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"strconv"
 )
 
 type Block struct {
@@ -15,12 +16,8 @@ type Block struct {
 }
 
 func (b *Block) Hash() string {
-	bytea, err := json.Marshal(b)
-	if err != nil {
-		panic(err)
-	}
-
-	sha := sha256.Sum256(bytea)
+	str := b.PreHash + strconv.Itoa(b.Nonce)
+	sha := sha256.Sum256([]byte(str))
 	return hex.EncodeToString(sha[:])
 }
 

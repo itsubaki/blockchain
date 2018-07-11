@@ -1,11 +1,6 @@
 package blockchain
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"math"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -18,7 +13,16 @@ type BlockChain struct {
 
 func NewBlockChain() *BlockChain {
 	c := &BlockChain{}
-	c.NewBlock("genesis block", 100)
+	b := &Block{
+		Index:       len(c.blocks) + 1,
+		Timestamp:   time.Now().UnixNano(),
+		Transaction: c.transcations,
+		PreHash:     "genesis block",
+		Nonce:       774,
+	}
+
+	c.transcations = []*Transaction{}
+	c.blocks = append(c.blocks, b)
 	return c
 }
 
@@ -57,49 +61,5 @@ func (c *BlockChain) Resolve(d *BlockChain) bool {
 	}
 
 	c.blocks = d.blocks
-	return true
-}
-
-func ProofOfWork(b *Block) int {
-	hash := b.Hash()
-	for nonce := 0; nonce < math.MaxInt64; nonce++ {
-		if Validate(hash, nonce) {
-			return nonce
-		}
-	}
-
-	panic("hash not found.")
-}
-
-func Validate(preHash string, current int) bool {
-	str := preHash + strconv.Itoa(current)
-	sha := sha256.Sum256([]byte(str))
-	hash := hex.EncodeToString(sha[:])
-
-	if strings.HasPrefix(hash, target) {
-		return true
-	}
-
-	return false
-}
-
-func ValidateChain(chain *BlockChain) bool {
-	pre := chain.blocks[0]
-	index := 1
-
-	for index < len(chain.blocks) {
-		next := chain.blocks[index]
-		if pre.Hash() != next.PreHash {
-			return false
-		}
-
-		if !Validate(pre.Hash(), next.Nonce) {
-			return false
-		}
-
-		pre = next
-		index = index + 1
-	}
-
 	return true
 }

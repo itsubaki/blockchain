@@ -14,7 +14,7 @@ func TestMine(t *testing.T) {
 		c.NewTransaction("alice", "bob", 1.6)
 
 		pre := c.Last()
-		nonce := ProofOfWork(pre)
+		_, nonce := ProofOfWork(pre)
 		new := c.NewBlock(pre.Hash(), nonce)
 
 		fmt.Println(new)
@@ -34,13 +34,11 @@ func TestInvalidBlock(t *testing.T) {
 		c.NewTransaction("alice", "bob", 1.6)
 
 		pre := c.Last()
-		nonce := ProofOfWork(pre)
+		_, nonce := ProofOfWork(pre)
 		c.NewBlock(pre.Hash(), nonce)
 	}
 
-	preHash := c.Last().Hash()
-	proof := 1000 // invalid proof
-	c.NewBlock(preHash, proof)
+	c.NewBlock(c.Last().Hash(), 1000)
 
 	if ValidateChain(c) {
 		t.Error("invalid chain")
