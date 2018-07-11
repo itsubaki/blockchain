@@ -38,8 +38,8 @@ func TestInvalidBlock(t *testing.T) {
 	}
 
 	preHash := c.Last().Hash()
-	proof := 1000 // invalid proof
-	c.NewBlock(preHash, proof)
+	nonce := 1000 // invalid nonce
+	c.NewBlock(preHash, nonce)
 
 	if ValidateChain(c) {
 		t.Error("invalid chain")
