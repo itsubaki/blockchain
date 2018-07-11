@@ -8,15 +8,22 @@ import (
 	"strings"
 )
 
-func Hash(preHash string, nonce int) string {
-	str := preHash + strconv.Itoa(nonce)
-	sha := sha256.Sum256([]byte(str))
-	return hex.EncodeToString(sha[:])
+const target = "0000"
+
+func Hash(preHash string, preT []*Transaction, nonce int) string {
+	src := preHash + strconv.Itoa(nonce)
+	for _, t := range preT {
+		src = src + t.String()
+	}
+
+	sha := sha256.Sum256([]byte(src))
+	hash := hex.EncodeToString(sha[:])
+	return hash
 }
 
-func ProofOfWork(preHash string) (string, int) {
+func ProofOfWork(preHash string, preT []*Transaction) (string, int) {
 	for nonce := 0; nonce < math.MaxInt64; nonce++ {
-		hash, ok := Validate(preHash, nonce)
+		hash, ok := Validate(preHash, preT, nonce)
 		if ok {
 			return hash, nonce
 		}
@@ -25,11 +32,8 @@ func ProofOfWork(preHash string) (string, int) {
 	panic("hash not found.")
 }
 
-func Validate(preHash string, current int) (string, bool) {
-	str := Hash(preHash, current)
-	sha := sha256.Sum256([]byte(str))
-	hash := hex.EncodeToString(sha[:])
-
+func Validate(preHash string, preT []*Transaction, current int) (string, bool) {
+	hash := Hash(preHash, preT, current)
 	if strings.HasPrefix(hash, target) {
 		return hash, true
 	}
@@ -47,7 +51,7 @@ func ValidateChain(chain *BlockChain) bool {
 			return false
 		}
 
-		_, ok := Validate(pre.Hash, next.Nonce)
+		_, ok := Validate(pre.Hash, pre.Transaction, next.Nonce)
 		if !ok {
 			return false
 		}

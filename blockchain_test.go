@@ -14,7 +14,7 @@ func TestMine(t *testing.T) {
 		c.NewTransaction("alice", "bob", 1.6)
 
 		preHash := c.Last().Hash
-		hash, nonce := ProofOfWork(preHash)
+		hash, nonce := ProofOfWork(preHash, c.Last().Transaction)
 		c.NewBlock(preHash, hash, nonce)
 	}
 
@@ -36,7 +36,7 @@ func TestInvalidBlock(t *testing.T) {
 		c.NewTransaction("alice", "bob", 1.6)
 
 		preHash := c.Last().Hash
-		hash, nonce := ProofOfWork(preHash)
+		hash, nonce := ProofOfWork(preHash, c.Last().Transaction)
 		c.NewBlock(preHash, hash, nonce)
 	}
 

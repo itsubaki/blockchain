@@ -3,7 +3,6 @@ package blockchain
 import "encoding/json"
 
 type Block struct {
-	Index       int            `json:"index"`
 	Timestamp   int64          `json:"timestamp"`
 	Transaction []*Transaction `json:"transaction"`
 	Hash        string         `json:"hash"`
