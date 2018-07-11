@@ -13,16 +13,7 @@ type BlockChain struct {
 
 func NewBlockChain() *BlockChain {
 	c := &BlockChain{}
-	b := &Block{
-		Index:       len(c.blocks) + 1,
-		Timestamp:   time.Now().UnixNano(),
-		Transaction: c.transcations,
-		PreHash:     "genesis block",
-		Nonce:       774,
-	}
-
-	c.transcations = []*Transaction{}
-	c.blocks = append(c.blocks, b)
+	c.NewBlock("genesis block", 774)
 	return c
 }
 
