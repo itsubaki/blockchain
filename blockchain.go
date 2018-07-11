@@ -13,15 +13,19 @@ type BlockChain struct {
 
 func NewBlockChain() *BlockChain {
 	c := &BlockChain{}
-	c.NewBlock("genesis block", 774)
+
+	preHash := "genesis block"
+	hash, nonce := ProofOfWork(preHash)
+	c.NewBlock(preHash, hash, nonce)
 	return c
 }
 
-func (c *BlockChain) NewBlock(preHash string, nonce int) *Block {
+func (c *BlockChain) NewBlock(preHash, hash string, nonce int) *Block {
 	b := &Block{
 		Index:       len(c.blocks) + 1,
 		Timestamp:   time.Now().UnixNano(),
 		Transaction: c.transcations,
+		Hash:        hash,
 		PreHash:     preHash,
 		Nonce:       nonce,
 	}
@@ -32,10 +36,9 @@ func (c *BlockChain) NewBlock(preHash string, nonce int) *Block {
 	return b
 }
 
-func (c *BlockChain) NewTransaction(sender, recipient string, amount float64) int {
+func (c *BlockChain) NewTransaction(sender, recipient string, amount float64) {
 	t := &Transaction{Sender: sender, Recipient: recipient, Amount: amount}
 	c.transcations = append(c.transcations, t)
-	return c.Last().Index + 1
 }
 
 func (c *BlockChain) Last() *Block {

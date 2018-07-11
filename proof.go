@@ -8,8 +8,13 @@ import (
 	"strings"
 )
 
-func ProofOfWork(b *Block) (string, int) {
-	preHash := b.Hash()
+func Hash(preHash string, nonce int) string {
+	str := preHash + strconv.Itoa(nonce)
+	sha := sha256.Sum256([]byte(str))
+	return hex.EncodeToString(sha[:])
+}
+
+func ProofOfWork(preHash string) (string, int) {
 	for nonce := 0; nonce < math.MaxInt64; nonce++ {
 		hash, ok := Validate(preHash, nonce)
 		if ok {
@@ -21,7 +26,7 @@ func ProofOfWork(b *Block) (string, int) {
 }
 
 func Validate(preHash string, current int) (string, bool) {
-	str := preHash + strconv.Itoa(current)
+	str := Hash(preHash, current)
 	sha := sha256.Sum256([]byte(str))
 	hash := hex.EncodeToString(sha[:])
 
@@ -38,11 +43,11 @@ func ValidateChain(chain *BlockChain) bool {
 
 	for index < len(chain.blocks) {
 		next := chain.blocks[index]
-		if pre.Hash() != next.PreHash {
+		if pre.Hash != next.PreHash {
 			return false
 		}
 
-		_, ok := Validate(pre.Hash(), next.Nonce)
+		_, ok := Validate(pre.Hash, next.Nonce)
 		if !ok {
 			return false
 		}
