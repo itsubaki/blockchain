@@ -1,2 +1,2 @@
 # blockchain
-blockchain written by golang
+blockchain written in golang
