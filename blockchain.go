@@ -6,13 +6,13 @@ import (
 
 type BlockChain struct {
 	blocks       []*Block
-	transcations []*Transaction
+	transactions []*Transaction
 }
 
 func NewBlockChain() *BlockChain {
 	c := &BlockChain{
 		blocks:       []*Block{},
-		transcations: []*Transaction{},
+		transactions: []*Transaction{},
 	}
 
 	preHash := "genesis block"
@@ -25,13 +25,13 @@ func NewBlockChain() *BlockChain {
 func (c *BlockChain) NewBlock(preHash, hash string, nonce int) *Block {
 	b := &Block{
 		Timestamp:   time.Now().UnixNano(),
-		Transaction: c.transcations,
+		Transaction: c.transactions,
 		Hash:        hash,
 		PreHash:     preHash,
 		Nonce:       nonce,
 	}
 
-	c.transcations = []*Transaction{}
+	c.transactions = []*Transaction{}
 	c.blocks = append(c.blocks, b)
 
 	return b
@@ -39,7 +39,7 @@ func (c *BlockChain) NewBlock(preHash, hash string, nonce int) *Block {
 
 func (c *BlockChain) NewTransaction(sender, recipient string, amount float64) {
 	t := &Transaction{Sender: sender, Recipient: recipient, Amount: amount}
-	c.transcations = append(c.transcations, t)
+	c.transactions = append(c.transactions, t)
 }
 
 func (c *BlockChain) Last() *Block {
