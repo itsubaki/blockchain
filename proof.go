@@ -42,22 +42,18 @@ func Validate(preHash string, preT []*Transaction, current int) (string, bool) {
 }
 
 func ValidateChain(chain *BlockChain) bool {
-	pre := chain.blocks[0]
-	index := 1
+	for i := 1; i < len(chain.blocks); i++ {
+		pre := chain.blocks[i-1]
+		current := chain.blocks[i]
 
-	for index < len(chain.blocks) {
-		next := chain.blocks[index]
-		if pre.Hash != next.PreHash {
+		if pre.Hash != current.PreHash {
 			return false
 		}
 
-		_, ok := Validate(pre.Hash, pre.Transaction, next.Nonce)
-		if !ok {
+		if _, ok := Validate(pre.Hash, pre.Transaction, current.Nonce); !ok {
 			return false
 		}
 
-		pre = next
-		index = index + 1
 	}
 
 	return true
