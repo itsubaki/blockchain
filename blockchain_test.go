@@ -6,7 +6,7 @@ import (
 )
 
 func TestMine(t *testing.T) {
-	c := NewBlockChain()
+	c := New()
 
 	for i := 0; i < 10; i++ {
 		c.NewTransaction("alice", "bob", 1.2)
@@ -22,13 +22,13 @@ func TestMine(t *testing.T) {
 		fmt.Println(b)
 	}
 
-	if !ValidateChain(c) {
+	if !c.Validate() {
 		t.Error("invalid chain")
 	}
 }
 
 func TestInvalidBlock(t *testing.T) {
-	c := NewBlockChain()
+	c := New()
 
 	for i := 0; i < 10; i++ {
 		c.NewTransaction("alice", "bob", 1.2)
@@ -42,7 +42,7 @@ func TestInvalidBlock(t *testing.T) {
 
 	c.NewBlock(c.Last().Hash, "foo", 1000)
 
-	if ValidateChain(c) {
+	if c.Validate() {
 		t.Error("invalid chain")
 	}
 }

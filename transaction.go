@@ -8,7 +8,7 @@ type Transaction struct {
 	Amount    float64 `json:"amount"`
 }
 
-func (t *Transaction) String() string {
+func (t Transaction) String() string {
 	bytea, err := json.Marshal(t)
 	if err != nil {
 		panic(err)
