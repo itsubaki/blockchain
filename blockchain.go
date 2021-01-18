@@ -42,6 +42,14 @@ func (c *BlockChain) NewTransaction(sender, recipient string, amount float64) {
 	c.transactions = append(c.transactions, t)
 }
 
+func (c *BlockChain) Transactions() []Transaction {
+	return c.transactions
+}
+
+func (c *BlockChain) Blocks() []Block {
+	return c.blocks
+}
+
 func (c *BlockChain) Last() Block {
 	return c.blocks[len(c.blocks)-1]
 }

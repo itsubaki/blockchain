@@ -1,48 +1,50 @@
-package blockchain
+package blockchain_test
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/itsubaki/blockchain"
 )
 
 func TestMine(t *testing.T) {
-	c := New()
+	bc := blockchain.New()
 
 	for i := 0; i < 10; i++ {
-		c.NewTransaction("alice", "bob", 1.2)
-		c.NewTransaction("alice", "bob", 1.4)
-		c.NewTransaction("alice", "bob", 1.6)
+		bc.NewTransaction("alice", "bob", 1.2)
+		bc.NewTransaction("alice", "bob", 1.4)
+		bc.NewTransaction("alice", "bob", 1.6)
 
-		preHash := c.Last().Hash
-		hash, nonce := ProofOfWork(preHash, c.Last().Transaction)
-		c.NewBlock(preHash, hash, nonce)
+		preHash := bc.Last().Hash
+		hash, nonce := blockchain.ProofOfWork(preHash, bc.Last().Transaction)
+		bc.NewBlock(preHash, hash, nonce)
 	}
 
-	for _, b := range c.blocks {
+	for _, b := range bc.Blocks() {
 		fmt.Println(b)
 	}
 
-	if !c.Validate() {
+	if !bc.Validate() {
 		t.Error("invalid chain")
 	}
 }
 
 func TestInvalidBlock(t *testing.T) {
-	c := New()
+	bc := blockchain.New()
 
 	for i := 0; i < 10; i++ {
-		c.NewTransaction("alice", "bob", 1.2)
-		c.NewTransaction("alice", "bob", 1.4)
-		c.NewTransaction("alice", "bob", 1.6)
+		bc.NewTransaction("alice", "bob", 1.2)
+		bc.NewTransaction("alice", "bob", 1.4)
+		bc.NewTransaction("alice", "bob", 1.6)
 
-		preHash := c.Last().Hash
-		hash, nonce := ProofOfWork(preHash, c.Last().Transaction)
-		c.NewBlock(preHash, hash, nonce)
+		preHash := bc.Last().Hash
+		hash, nonce := blockchain.ProofOfWork(preHash, bc.Last().Transaction)
+		bc.NewBlock(preHash, hash, nonce)
 	}
 
-	c.NewBlock(c.Last().Hash, "foo", 1000)
+	bc.NewBlock(bc.Last().Hash, "foo", 1000)
 
-	if c.Validate() {
+	if bc.Validate() {
 		t.Error("invalid chain")
 	}
 }
