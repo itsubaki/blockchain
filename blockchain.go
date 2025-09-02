@@ -18,7 +18,6 @@ func New() *BlockChain {
 	preHash := "genesis block"
 	hash, nonce := ProofOfWork(preHash, make([]Transaction, 0))
 	c.NewBlock(preHash, hash, nonce)
-
 	return c
 }
 
@@ -33,13 +32,15 @@ func (c *BlockChain) NewBlock(preHash, hash string, nonce int) Block {
 
 	c.transactions = make([]Transaction, 0)
 	c.blocks = append(c.blocks, b)
-
 	return b
 }
 
 func (c *BlockChain) NewTransaction(sender, recipient string, amount float64) {
-	t := Transaction{Sender: sender, Recipient: recipient, Amount: amount}
-	c.transactions = append(c.transactions, t)
+	c.transactions = append(c.transactions, Transaction{
+		Sender: sender,
+		Recipient: recipient,
+		Amount: amount,
+	})
 }
 
 func (c *BlockChain) Transactions() []Transaction {
