@@ -10,17 +10,6 @@ import (
 
 const target = "0000"
 
-func Hash(preHash string, preT []*Transaction, nonce int) string {
-	src := preHash + strconv.Itoa(nonce)
-	for _, t := range preT {
-		src = src + t.String()
-	}
-
-	sha := sha256.Sum256([]byte(src))
-	hash := hex.EncodeToString(sha[:])
-	return hash
-}
-
 func ProofOfWork(preHash string, preT []*Transaction) (string, int) {
 	for nonce := range math.MaxInt64 {
 		hash, ok := Validate(preHash, preT, nonce)
@@ -39,4 +28,15 @@ func Validate(preHash string, preT []*Transaction, current int) (string, bool) {
 	}
 
 	return "", false
+}
+
+func Hash(preHash string, preT []*Transaction, nonce int) string {
+	src := preHash + strconv.Itoa(nonce)
+	for _, t := range preT {
+		src = src + t.String()
+	}
+
+	sha := sha256.Sum256([]byte(src))
+	hash := hex.EncodeToString(sha[:])
+	return hash
 }
