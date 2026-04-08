@@ -10,7 +10,7 @@ import (
 
 const target = "0000"
 
-func Hash(preHash string, preT []Transaction, nonce int) string {
+func Hash(preHash string, preT []*Transaction, nonce int) string {
 	src := preHash + strconv.Itoa(nonce)
 	for _, t := range preT {
 		src = src + t.String()
@@ -21,8 +21,8 @@ func Hash(preHash string, preT []Transaction, nonce int) string {
 	return hash
 }
 
-func ProofOfWork(preHash string, preT []Transaction) (string, int) {
-	for nonce := 0; nonce < math.MaxInt64; nonce++ {
+func ProofOfWork(preHash string, preT []*Transaction) (string, int) {
+	for nonce := range math.MaxInt64 {
 		hash, ok := Validate(preHash, preT, nonce)
 		if ok {
 			return hash, nonce
@@ -32,7 +32,7 @@ func ProofOfWork(preHash string, preT []Transaction) (string, int) {
 	panic("hash not found.")
 }
 
-func Validate(preHash string, preT []Transaction, current int) (string, bool) {
+func Validate(preHash string, preT []*Transaction, current int) (string, bool) {
 	hash := Hash(preHash, preT, current)
 	if strings.HasPrefix(hash, target) {
 		return hash, true
